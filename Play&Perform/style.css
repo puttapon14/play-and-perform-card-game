@@ -1,0 +1,190 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f0f2f5;
+    color: #333;
+    text-align: center;
+}
+
+.container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 2em;
+}
+
+p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+button:active {
+    background-color: #3e8e41;
+    transform: translateY(0);
+}
+
+/* --- ส่วนสำหรับ Animation การ์ด --- */
+.card-display {
+    perspective: 800px;
+    height: 380px; /* **ตั้งค่าตามขนาดการ์ดที่คุณต้องการ** */
+    width: 250px;  /* **ตั้งค่าตามขนาดการ์ดที่คุณต้องการ** */
+    margin: 0 auto;
+    position: relative; /* **สำคัญมาก: ตัวแม่ต้องมี position: relative เพื่อให้ลูกที่ position: absolute อยู่ภายใน** */
+    border-radius: 10px;
+    transform-style: preserve-3d;
+}
+
+.card-back, .card-front {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    padding: 0;
+    box-sizing: border-box;
+    backface-visibility: hidden;
+    transition: transform 0.8s ease-in-out;
+    position: absolute; /* **สำคัญมาก: ตัวลูกต้องมี position: absolute เพื่อให้อยู่ซ้อนทับกัน** */
+    top: 0;           /* **ให้เริ่มจากด้านบนสุดของตัวแม่** */
+    left: 0;          /* **ให้เริ่มจากด้านซ้ายสุดของตัวแม่** */
+    overflow: hidden; /* **สำคัญ: เพื่อซ่อนส่วนที่เกินขอบการ์ด หากรูปแมวใหญ่เกินไปหรือสัดส่วนไม่ตรง** */
+}
+
+/* รูปภาพกรอบไพ่ (สำหรับ card-front) */
+.card-frame-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill; /* **ใช้ fill เพื่อให้รูปกรอบยืดเต็มพื้นที่** */
+    z-index: 1;
+}
+
+/* --- การ์ดคว่ำหน้า (รูปแมว) --- */
+.card-back {
+    color: white; /* สีข้อความ "คลิกเพื่อสุ่มไพ่" (ถ้ามี) */
+    font-size: 1.5em;
+    font-weight: bold;
+    transform: rotateY(0deg);
+    z-index: 2; /* อยู่ด้านบน */
+    /* **สำคัญ: ใช้ flexbox จัดวางเนื้อหา (เช่นข้อความ) ให้ตรงกลาง div** */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* จัดข้อความแนวตั้งกลาง */
+    align-items: center;   /* จัดข้อความแนวนอนกลาง */
+    
+    /* รูปแมวจะถูกตั้งค่าผ่าน JavaScript (ใน script.js) */
+    background-size: cover; /* **ใช้ cover เพื่อให้รูปเต็มพื้นที่ div แต่รูปจะถูกตัดหากสัดส่วนไม่ตรง** */
+                           /* **ถ้าอยากให้รูปแมวทั้งตัวแสดงโดยไม่ถูกตัด อาจลองเปลี่ยนเป็น 'contain' (แต่อาจมีช่องว่าง)** */
+    background-repeat: no-repeat; /* ไม่ให้รูปซ้ำ */
+    background-position: center; /* จัดรูปพื้นหลังอยู่ตรงกลาง */
+    background-color: #556ee6; /* สีพื้นหลังสำรอง ถ้าโหลดรูปแมวไม่ขึ้น */
+}
+
+.card-back p { /* ข้อความ "คลิกเพื่อสุ่มไพ่" */
+    /* สไตล์ของข้อความนี้จะยังคงอยู่ แต่จะไม่มีผลถ้าคุณลบข้อความออกจาก JS */
+    width: 80%; /* ข้อความไม่ชิดขอบเกินไป */
+    z-index: 2; /* ให้ข้อความอยู่เหนือรูปแมว */
+    font-size: 1.2em;
+    line-height: 1.4;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.7); /* เพิ่มเงาให้ข้อความอ่านง่ายบนรูปแมว */
+    text-align: center;
+    margin: 0; /* ลบ margin เริ่มต้นของ <p> */
+    padding: 0; /* ลบ padding เริ่มต้นของ <p> */
+}
+
+/* --- การ์ดที่ถูกสุ่ม (หน้าไพ่ กรอบสีต่างๆ) --- */
+.card-front {
+    background-color: #ffffff; /* พื้นหลังสีขาว */
+    border: 2px solid #ddd; /* ขอบการ์ด */
+    color: #333; /* สีข้อความบนหน้าไพ่ */
+    transform: rotateY(180deg); /* เริ่มต้นคว่ำหน้า */
+    z-index: 1; /* อยู่ด้านล่าง card-back */
+    position: relative; /* สำคัญสำหรับจัดวาง h2 และ p ภายใน */
+}
+
+/* ส่วนปรับแต่ง Title ของการ์ด */
+.card-front h2 {
+    color: #e74c3c; /* สีข้อความชื่อการ์ด */
+    position: absolute; /* จัดวางแบบ absolute */
+    top: 10%; /* ห่างจากด้านบน 10% */
+    left: 50%; /* ห่างจากด้านซ้าย 50% */
+    transform: translateX(-50%); /* เลื่อนกลับมาตรงกลางตามแนวนอน */
+    width: 75%; /* ความกว้าง 75% ของการ์ด */
+    font-size: 1.6em;
+    font-weight: bold;
+    z-index: 2; /* อยู่เหนือกรอบรูป */
+    line-height: 1.1;
+    word-wrap: break-word; /* ให้ข้อความตัดบรรทัดเมื่อยาวเกิน */
+    text-align: center;
+    display: flex; /* ใช้ flexbox เพื่อจัดกลาง */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(1.6em * 1.1 * 2); /* ความสูงขั้นต่ำสำหรับ 2 บรรทัด */
+}
+
+/* ส่วนปรับแต่ง Action ของการ์ด */
+.card-front p {
+    font-size: 1.05em;
+    color: #555;
+    position: absolute; /* จัดวางแบบ absolute */
+    top: 55%; /* ห่างจากด้านบน 55% */
+    left: 50%; /* ห่างจากด้านซ้าย 50% */
+    transform: translate(-50%, -50%); /* เลื่อนกลับมาตรงกลางทั้งแนวนอนและแนวตั้ง */
+    width: 75%;
+    line-height: 1.4;
+    z-index: 2; /* อยู่เหนือกรอบรูป */
+    text-align: center;
+}
+
+/* Classes สำหรับการพลิกการ์ด */
+.card-display.flipped .card-back {
+    transform: rotateY(180deg); /* พลิกด้านหลัง 180 องศา */
+}
+
+.card-display.flipped .card-front {
+    transform: rotateY(360deg); /* พลิกด้านหน้า 360 องศา */
+}
+
+.hidden {
+    display: none;
+}
